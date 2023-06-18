@@ -140,7 +140,7 @@ custom_wait_for_all_springpads_placed( str_type, str_flag )
                 is_clear++;
         }
 
-        if ( !( is_clear < ( 4 - custom_get_number_of_players() ) ) )
+        if ( !( is_clear > ( 4 - custom_get_number_of_players() ) ) )
             flag_set( str_flag );
 
         wait 1;
