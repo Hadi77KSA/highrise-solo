@@ -171,7 +171,7 @@ custom_springpad_count_watcher( is_generator )
 
         level notify( "sq_pts_springad_count" + n_count );
         n_players = custom_get_number_of_players();
-        while ( n_count >= n_players && n_count < 4 )
+        while ( !is_generator && n_count >= n_players && n_count < 4 )
         {
             wait 10;
             n_count++;
@@ -182,13 +182,10 @@ custom_springpad_count_watcher( is_generator )
 
 custom_get_number_of_players()
 {
-    if( getPlayers().size > 4 )
+    n_players = getPlayers().size;
+    if( n_players > 4 )
     {
         n_players = 4;
-    }
-    else
-    {
-        n_players = getPlayers().size;
     }
 
     return n_players;
