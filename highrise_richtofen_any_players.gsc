@@ -1,10 +1,10 @@
+#include common_scripts\utility;
+#include maps\mp\_utility;
 #include maps\mp\zm_highrise_sq;
+#include maps\mp\zm_highrise_sq_atd;
+#include maps\mp\zm_highrise_sq_pts;
 #include maps\mp\zombies\_zm_sidequests;
 #include maps\mp\zombies\_zm_utility;
-#include maps\mp\_utility;
-#include common_scripts\utility;
-#include maps\mp\zm_highrise_sq_pts;
-#include maps\mp\zm_highrise_sq_atd;
 
 init()
 {
@@ -17,6 +17,7 @@ init()
 
 //Elevator Stand step
 
+//makes elevator symbols require as many symbols as players
 custom_sq_atd_elevators()
 {
     a_elevators = array( "elevator_bldg1b_trigger", "elevator_bldg1d_trigger", "elevator_bldg3b_trigger", "elevator_bldg3c_trigger" );
@@ -27,7 +28,7 @@ custom_sq_atd_elevators()
         trig_elevator = getent( a_elevators[i], "targetname" );
         trig_elevator thread sq_atd_watch_elevator( a_elevator_flags[i] );
     }
-    //While no elevator, wait until any and break
+
     while ( !standing_on_enough_elevators_check( a_elevator_flags ) )
     {
         flag_wait_any_array( a_elevator_flags );
@@ -52,6 +53,7 @@ custom_sq_atd_elevators()
     level thread vo_maxis_atd_elevators();
 }
 
+//checks if the players are standing on enough elevators
 standing_on_enough_elevators_check( a_elevator_flags )
 {
     n_players_standing_on_elevator = 0;
@@ -59,9 +61,7 @@ standing_on_enough_elevators_check( a_elevator_flags )
     foreach( m_elevator_flag in a_elevator_flags )
     {
         if( flag( m_elevator_flag ) )
-        {
             n_players_standing_on_elevator++;
-        }
     }
 
     return n_players_standing_on_elevator >= custom_get_number_of_players();
@@ -69,9 +69,9 @@ standing_on_enough_elevators_check( a_elevator_flags )
 
 //Dragon Puzzle step
 
+//initialises the floor symbols require as many symbols as players
 custom_sq_atd_drg_puzzle()
 {
-//No reset, requires as many dragons as players in the match
     level.sq_atd_cur_drg = 4 - custom_get_number_of_players();
     a_puzzle_trigs = getentarray( "trig_atd_drg_puzzle", "targetname" );
     a_puzzle_trigs = array_randomize( a_puzzle_trigs );
@@ -86,6 +86,7 @@ custom_sq_atd_drg_puzzle()
     level thread vo_maxis_atd_order_complete();
 }
 
+//when floor symbols reset, they reset back to require as many symbols as players
 custom_drg_puzzle_trig_think( n_order_id )
 {
     self.drg_active = 0;
@@ -131,10 +132,9 @@ custom_drg_puzzle_trig_think( n_order_id )
     }
 }
 
-//Hopefully working Springpad count skip 
+//makes Richtofen Trample Steam step require as many as players
 custom_wait_for_all_springpads_placed( str_type, str_flag )
 {
-    //str_type is basically useless, but has to be kept as other functions will call with an str_type
     a_spots = getstructarray( str_type, "targetname" );
 
     while ( !flag( str_flag ) )
@@ -154,7 +154,7 @@ custom_wait_for_all_springpads_placed( str_type, str_flag )
     }
 }
 
-//Make it report springpad counts, might or might not require further improvement
+//quotes skip for Richtofen Trample Steams
 custom_springpad_count_watcher( is_generator )
 {
     level endon( "sq_pts_springad_count4" );
@@ -188,13 +188,12 @@ custom_springpad_count_watcher( is_generator )
     }
 }
 
+//returns the number of players, and if the number is greater than 4, returns 4. Used for specific steps
 custom_get_number_of_players()
 {
     n_players = getPlayers().size;
     if( n_players > 4 )
-    {
         n_players = 4;
-    }
 
     return n_players;
 }
