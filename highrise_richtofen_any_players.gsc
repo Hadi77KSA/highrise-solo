@@ -15,6 +15,8 @@ init()
     replacefunc( ::springpad_count_watcher, ::custom_springpad_count_watcher );
 }
 
+//Elevator Stand step
+
 custom_sq_atd_elevators()
 {
     a_elevators = array( "elevator_bldg1b_trigger", "elevator_bldg1d_trigger", "elevator_bldg3b_trigger", "elevator_bldg3c_trigger" );
@@ -25,7 +27,7 @@ custom_sq_atd_elevators()
         trig_elevator = getent( a_elevators[i], "targetname" );
         trig_elevator thread sq_atd_watch_elevator( a_elevator_flags[i] );
     }
-
+    //While no elevator, wait until any and break
     while ( !standing_on_enough_elevators_check( a_elevator_flags ) )
     {
         flag_wait_any_array( a_elevator_flags );
@@ -65,8 +67,11 @@ standing_on_enough_elevators_check( a_elevator_flags )
     return n_players_standing_on_elevator >= custom_get_number_of_players();
 }
 
+//Dragon Puzzle step
+
 custom_sq_atd_drg_puzzle()
 {
+//No reset, requires as many dragons as players in the match
     level.sq_atd_cur_drg = 4 - custom_get_number_of_players();
     a_puzzle_trigs = getentarray( "trig_atd_drg_puzzle", "targetname" );
     a_puzzle_trigs = array_randomize( a_puzzle_trigs );
@@ -126,8 +131,10 @@ custom_drg_puzzle_trig_think( n_order_id )
     }
 }
 
+//Hopefully working Springpad count skip 
 custom_wait_for_all_springpads_placed( str_type, str_flag )
 {
+    //str_type is basically useless, but has to be kept as other functions will call with an str_type
     a_spots = getstructarray( str_type, "targetname" );
 
     while ( !flag( str_flag ) )
@@ -147,6 +154,7 @@ custom_wait_for_all_springpads_placed( str_type, str_flag )
     }
 }
 
+//Make it report springpad counts, might or might not require further improvement
 custom_springpad_count_watcher( is_generator )
 {
     level endon( "sq_pts_springad_count4" );
